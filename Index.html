@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Top Secret Birthday Mission 🔒</title>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { margin: 0; padding: 20px; background: linear-gradient(135deg, #0f172a, #1e293b); color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .card { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 20px; padding: 30px; width: 100%; max-width: 450px; text-align: center; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); }
+    .lock-icon { font-size: 50px; margin-bottom: 10px; }
+    .step-indicator { font-size: 14px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; }
+    h2 { margin-top: 0; color: #f35626; background-image: linear-gradient(45deg, #f35626, #feab3a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    input[type="text"] { width: 100%; padding: 12px 15px; margin: 20px 0 10px 0; border: 2px solid #334155; border-radius: 10px; background: #0f172a; color: #fff; font-size: 16px; outline: none; transition: 0.3s; }
+    input[type="text"]:focus { border-color: #3b82f6; }
+    button { width: 100%; padding: 12px; border: none; border-radius: 10px; background: linear-gradient(45deg, #3b82f6, #8b5cf6); color: white; font-size: 16px; font-weight: bold; cursor: pointer; transition: transform 0.2s, opacity 0.2s; }
+    button:hover { transform: translateY(-2px); opacity: 0.9; }
+    .error-msg { color: #ef4444; font-size: 14px; height: 20px; margin-top: 5px; }
+    #secret-container { display: none; animation: fadeIn 1s ease-in-out; }
+    .birthday-img { width: 100%; max-height: 280px; object-fit: cover; border-radius: 15px; border: 3px solid #f59e0b; margin: 15px 0; }
+    .wish-text { font-size: 22px; font-weight: bold; color: #f59e0b; margin-top: 15px; line-height: 1.4; }
+    @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+  </style>
+</head>
+<body>
+  <div class="card" id="quiz-card">
+    <div class="lock-icon" id="lock-icon">🔒</div>
+    <div class="step-indicator" id="step-count">Question 1 of 5</div>
+    <h3 id="question-text">Loading question...</h3>
+    <input type="text" id="answer-input" placeholder="Type your answer here..." autocomplete="off">
+    <button onclick="checkAnswer()">Unlock Next 🔓</button>
+    <div class="error-msg" id="error-msg"></div>
+  </div>
+
+  <div class="card" id="secret-container">
+    <div class="lock-icon">🎉</div>
+    <h2>SECRET UNLOCKED!</h2>
+    <img src="https://lh3.googleusercontent.com/d/12N3R3-rGCGdtRxvQXNd4DgVB4iPZHClX" alt="Birthday Photo" class="birthday-img" id="secret-photo">
+    <div class="wish-text">Many Many Happy Returns Of the day Mr.Why 🎂🥳</div>
+  </div>
+
+  <script>
+    const quizData = [
+      { question: "When did our first chat start?", answer: "7 july" },
+      { question: "Our first meet date?", answer: "18 july" },
+      { question: "My favourite colour?", answer: "red" },
+      { question: "My birthday date?", answer: "21 nov" },
+      { question: "Where do I want to go after my marriage?", answer: "kedarnath" }
+    ];
+    let currentStep = 0;
+    function loadQuestion() {
+      document.getElementById("step-count").innerText = `Question ${currentStep + 1} of ${quizData.length}`;
+      document.getElementById("question-text").innerText = quizData[currentStep].question;
+      document.getElementById("answer-input").value = "";
+      document.getElementById("error-msg").innerText = "";
+    }
+    function checkAnswer() {
+      const userInput = document.getElementById("answer-input").value.trim().toLowerCase();
+      const correctAnswer = quizData[currentStep].answer.toLowerCase();
+      if (userInput === correctAnswer) {
+        currentStep++;
+        if (currentStep < quizData.length) { loadQuestion(); } else { revealSecret(); }
+      } else { document.getElementById("error-msg").innerText = "Wrong answer! Try again. ❌"; }
+    }
+    document.getElementById("answer-input").addEventListener("keypress", function(event) { if (event.key === "Enter") { checkAnswer(); } });
+    function triggerCrackers() {
+      var duration = 3.5 * 1000; var animationEnd = Date.now() + duration;
+      var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 999 };
+      var interval = setInterval(function() {
+        var timeLeft = animationEnd - Date.now();
+        if (timeLeft <= 0) { return clearInterval(interval); }
+        var particleCount = 50 * (timeLeft / duration);
+        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+      }, 250);
+    }
+    function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+    function revealSecret() {
+      document.getElementById("quiz-card").style.display = "none";
+      document.getElementById("secret-container").style.display = "block";
+      triggerCrackers();
+    }
+    loadQuestion();
+  </script>
+</body>
+</html>
